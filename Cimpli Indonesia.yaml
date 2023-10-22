@@ -1,0 +1,353 @@
+proxy-providers:
+  Indonesia:
+    type: file
+    path: "./VPN Indonesia.yaml"
+    health-check:
+      enable: true
+      url: http://www.gstatic.com/generate_204
+      interval: 10
+  Singapura:
+    type: file
+    path: "./VPN Singapura.yaml"
+    health-check:
+      enable: true
+      url: http://www.gstatic.com/generate_204
+      interval: 10
+proxy-groups:
+- name: Cimpli Indonesia
+  type: select
+  disable-udp: false
+  proxies:
+  - Server ID Latancy
+  - Server ID LoadBalance
+  - Server SG Latancy
+  - Server SG LoadBalance
+  url: https://cp.cloudflare.com/generate_204
+  interval: '10'
+- name: Play Games
+  type: select
+  disable-udp: false
+  proxies:
+  - Server ID Latancy
+  - Server ID LoadBalance
+  - Server SG Latancy
+  - Server SG LoadBalance
+  url: https://cp.cloudflare.com/generate_204
+  interval: '10'
+- name: Social Media
+  type: select
+  disable-udp: false
+  proxies:
+  - Server ID Latancy
+  - Server ID LoadBalance
+  - Server SG Latancy
+  - Server SG LoadBalance
+  url: https://cp.cloudflare.com/generate_204
+  interval: '10'
+- name: Streaming
+  type: select
+  disable-udp: false
+  proxies:
+  - Server ID Latancy
+  - Server ID LoadBalance
+  - Server SG Latancy
+  - Server SG LoadBalance
+  url: https://cp.cloudflare.com/generate_204
+  interval: '10'
+- name: Speedtest
+  type: select
+  disable-udp: false
+  proxies:
+  - Server ID Latancy
+  - Server ID LoadBalance
+  - Server SG Latancy
+  - Server SG LoadBalance
+  url: https://cp.cloudflare.com/generate_204
+  interval: '10'
+- name: Adult 18+
+  type: select
+  disable-udp: false
+  proxies:
+  - DIRECT
+  - REJECT
+  - Cimpli Indonesia
+  url: https://cp.cloudflare.com/generate_204
+  interval: '10'
+- name: uBlock
+  type: select
+  disable-udp: false
+  proxies:
+  - DIRECT
+  - REJECT
+  - Cimpli Indonesia
+  url: https://cp.cloudflare.com/generate_204
+  interval: '10'
+- name: Latancy ID
+  type: url-test
+  disable-udp: false
+  use:
+  - Indonesia
+- name: Latancy SG
+  type: url-test
+  disable-udp: false
+  use:
+  - Singapura
+- name: LoadBalance ID
+  type: load-balance
+  strategy: round-robin
+  disable-udp: false
+  use:
+  - Indonesia
+- name: LoadBalance SG
+  type: load-balance
+  strategy: round-robin
+  disable-udp: false
+  use:
+  - Singapura
+- name: Server ID Latancy
+  type: fallback
+  disable-udp: false
+  proxies:
+  - Latancy ID
+  - Latancy SG
+  url: https://cp.cloudflare.com/generate_204
+  interval: '10'
+- name: Server ID LoadBalance
+  type: fallback
+  disable-udp: false
+  proxies:
+  - LoadBalance ID
+  - LoadBalance SG
+  url: https://cp.cloudflare.com/generate_204
+  interval: '10'
+- name: Server SG Latancy
+  type: fallback
+  disable-udp: false
+  proxies:
+  - Latancy SG
+  - Latancy ID
+  url: https://cp.cloudflare.com/generate_204
+  interval: '10'
+- name: Server SG LoadBalance
+  type: fallback
+  disable-udp: false
+  proxies:
+  - LoadBalance SG
+  - LoadBalance ID
+  url: https://cp.cloudflare.com/generate_204
+  interval: '10'
+port: 7890
+socks-port: 7891
+redir-port: 7892
+mixed-port: 7893
+tproxy-port: 7895
+ipv6: false
+mode: rule
+log-level: silent
+allow-lan: true
+external-controller: 0.0.0.0:9090
+secret: ""
+bind-address: "*"
+unified-delay: true
+profile:
+  store-selected: true
+dns:
+  enable: true
+  ipv6: false
+  enhanced-mode: redir-host
+  listen: 0.0.0.0:7874
+  nameserver:
+    - 1.1.1.1
+    - 8.8.8.8
+  fallback:
+    - 1.0.0.1
+    - https://dns.cloudflare.com/dns-query
+    - https://dns.google/dns-query
+    - 112.215.203.254
+  default-nameserver:
+    - 1.1.1.1
+    - 8.8.8.8
+    - 112.215.203.254
+rules:
+- IP-CIDR,198.18.0.1/16,REJECT,no-resolve
+- RULE-SET,Rule_Browser,Cimpli Indonesia
+- DST-PORT,3478,Social Media
+- DST-PORT,4244,Social Media
+- DST-PORT,53,Social Media
+- DST-PORT,40020,Social Media
+- DST-PORT,57923,Social Media
+- RULE-SET,Rule_Whatsapp,Social Media
+- RULE-SET,Rule_Mbanking,Social Media
+- RULE-SET,Rule_ML,Play Games
+- RULE-SET,Rule_Pubg,Play Games
+- RULE-SET,Rule_FF,Play Games
+- RULE-SET,Rule_loginml,Play Games
+- RULE-SET,Rule_Gameumum,Play Games
+- RULE-SET,Rule_Haram,Adult 18+
+- RULE-SET,Rule_Netflix,Streaming
+- RULE-SET,Rule_TV,Streaming
+- RULE-SET,Rule_TV2,Streaming
+- RULE-SET,Rule_Streaming,Streaming
+- RULE-SET,Rule_Streaming2,Streaming
+- RULE-SET,Rule_adblock2,uBlock
+- RULE-SET,Rule_adblock,uBlock
+- RULE-SET,Rule_Speedtest,Speedtest
+- RULE-SET,Rule_Olshop,Streaming
+- RULE-SET,Rule_Olshop2,Streaming
+- RULE-SET,Rule_Sosmed,Social Media
+- RULE-SET,Rule_Sosmed2,Social Media
+- RULE-SET,Rule_Playstore,Cimpli Indonesia
+- RULE-SET,Rule_Ewallet,Social Media
+- RULE-SET,Rule_Zerotier,Cimpli Indonesia
+- MATCH,GLOBAL
+rule-providers:
+  Reject:
+    type: http
+    behavior: classical
+    path: "./reject.yaml"
+    url: https://raw.githubusercontent.com/AnamCimpli/clash_for_android/main/rule_provider/reject.yaml
+    interval: 86400
+  Rule_Whatsapp:
+    type: http
+    behavior: classical
+    path: "./whatsapp.yaml"
+    url: https://raw.githubusercontent.com/AnamCimpli/clash_for_android/main/rule_provider/whatsapp.yaml
+    interval: 86400
+  Rule_Ewallet:
+    type: http
+    behavior: classical
+    path: "./Ewallet.yaml"
+    url: https://raw.githubusercontent.com/AnamCimpli/clash_for_android/main/rule_provider/Ewallet.yaml
+    interval: 86400
+  Rule_Mbanking:
+    type: http
+    behavior: domain
+    path: "./Mbanking.yaml"
+    url: https://raw.githubusercontent.com/AnamCimpli/clash_for_android/main/rule_provider/Mbanking.yaml
+    interval: 86400
+  Rule_ML:
+    type: http
+    behavior: classical
+    path: "./MobileLegend.yaml"
+    url: https://raw.githubusercontent.com/AnamCimpli/clash_for_android/main/rule_provider/MobileLegend.yaml
+    interval: 86400
+  Rule_Pubg:
+    type: http
+    behavior: classical
+    path: "./pubgmobile.yaml"
+    url: https://raw.githubusercontent.com/AnamCimpli/clash_for_android/main/rule_provider/pubgmobile.yaml
+    interval: 86400
+  Rule_FF:
+    type: http
+    behavior: classical
+    path: "./freefire.yaml"
+    url: https://raw.githubusercontent.com/AnamCimpli/clash_for_android/main/rule_provider/freefire.yaml
+    interval: 86400
+  Rule_loginml:
+    type: http
+    behavior: classical
+    path: "./loginml.yaml"
+    url: https://raw.githubusercontent.com/AnamCimpli/clash_for_android/main/rule_provider/loginml.yaml
+    interval: 86400
+  Rule_Gameumum:
+    type: http
+    behavior: classical
+    path: "./gameumum.yaml"
+    url: https://raw.githubusercontent.com/AnamCimpli/clash_for_android/main/rule_provider/gameumum.yaml
+    interval: 86400
+  Rule_Browser:
+    type: http
+    behavior: classical
+    path: "./browsermaster.yaml"
+    url: https://raw.githubusercontent.com/AnamCimpli/clash_for_android/main/rule_provider/browsermaster.yaml
+    interval: 86400
+  Rule_Sosmed:
+    type: http
+    behavior: classical
+    path: "./sosmed.yaml"
+    url: https://raw.githubusercontent.com/AnamCimpli/clash_for_android/main/rule_provider/sosmed.yaml
+    interval: 86400
+  Rule_Sosmed2:
+    type: http
+    behavior: domain
+    path: "./sosmed2.yaml"
+    url: https://raw.githubusercontent.com/AnamCimpli/clash_for_android/main/rule_provider/sosmed2.yaml
+    interval: 86400
+  Rule_adblock2:
+    type: http
+    behavior: domain
+    path: "./adblock2.yaml"
+    url: https://raw.githubusercontent.com/AnamCimpli/clash_for_android/main/rule_provider/adblock2.yaml
+    interval: 86400
+  Rule_adblock:
+    type: http
+    behavior: domain
+    path: "./adblock.yaml"
+    url: https://raw.githubusercontent.com/AnamCimpli/clash_for_android/main/rule_provider/adblock.yaml
+    interval: 86400
+  Rule_Speedtest:
+    type: http
+    behavior: classical
+    path: "./speedtest.yaml"
+    url: https://raw.githubusercontent.com/AnamCimpli/clash_for_android/main/rule_provider/speedtest.yaml
+    interval: 86400
+  Rule_Olshop:
+    type: http
+    behavior: classical
+    path: "./olshop.yaml"
+    url: https://raw.githubusercontent.com/AnamCimpli/clash_for_android/main/rule_provider/olshop.yaml
+    interval: 86400
+  Rule_Olshop2:
+    type: http
+    behavior: domain
+    path: "./olshop2.yaml"
+    url: https://raw.githubusercontent.com/AnamCimpli/clash_for_android/main/rule_provider/olshop2.yaml
+    interval: 86400
+  Rule_Playstore:
+    type: http
+    behavior: classical
+    path: "./playstore.yaml"
+    url: https://raw.githubusercontent.com/AnamCimpli/clash_for_android/main/rule_provider/playstore.yaml
+    interval: 86400
+  Rule_Haram:
+    type: http
+    behavior: domain
+    path: "./haram.yaml"
+    url: https://raw.githubusercontent.com/AnamCimpli/clash_for_android/main/rule_provider/haram.yaml
+    interval: 86400
+  Rule_Streaming:
+    type: http
+    behavior: classical
+    path: "./Streaming.yaml"
+    url: https://raw.githubusercontent.com/AnamCimpli/clash_for_android/main/rule_provider/Streaming.yaml
+    interval: 86400
+  Rule_Streaming2:
+    type: http
+    behavior: domain
+    path: "./streaming2.yaml"
+    url: https://raw.githubusercontent.com/AnamCimpli/clash_for_android/main/rule_provider/streaming2.yaml
+    interval: 86400
+  Rule_Netflix:
+    type: http
+    behavior: classical
+    path: "./Netflix.yaml"
+    url: https://raw.githubusercontent.com/AnamCimpli/clash_for_android/main/rule_provider/Netflix.yaml
+    interval: 86400
+  Rule_TV:
+    type: http
+    behavior: classical
+    path: "./tv.yaml"
+    url: https://raw.githubusercontent.com/AnamCimpli/clash_for_android/main/rule_provider/tv.yaml
+    interval: 86400
+  Rule_TV2:
+    type: http
+    behavior: domain
+    path: "./tv2.yaml"
+    url: https://raw.githubusercontent.com/AnamCimpli/clash_for_android/main/rule_provider/tv2.yaml
+    interval: 86400
+  Rule_Zerotier:
+    type: http
+    behavior: classical
+    path: "./zerotier.yaml"
+    url: https://raw.githubusercontent.com/AnamCimpli/clash_for_android/main/rule_provider/zerotier.yaml
+    interval: 86400
